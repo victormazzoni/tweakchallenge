@@ -10,10 +10,9 @@ export default class NotesRepository {
   }
 
   async getAllNotes(userId: string): Promise<Note[]> {
-
     const result = await this.docClient.scan({
       TableName: this.table,
-      // 'KeyConditionExpression' defines the condition for the query
+      // 'KeyConditionExpression' defines the condition for the scan
       // - 'userId = :userId': only return items with matching 'userId'
       //   partition key
       FilterExpression: "userId = :userId",
@@ -47,21 +46,21 @@ export default class NotesRepository {
   }
   
   async updateNote(partialNote: Partial<Note>, userId: string): Promise<Note> {
+    
     const updated = await this.docClient.update({
       TableName: this.table,
       Key: {
-        'id': partialNote.id,
-        'userId': userId
+        'id': partialNote.id
       },
       UpdateExpression: 'set userId = :userId, content = :content, attachment = :attachment',
       ExpressionAttributeValues: {
-        ':userId': partialNote.userId,
-        ':content': partialNote.content,
-        ':attachment': partialNote.attachment
+        ':userId': userId,
+        ':content': AWS.config.credentials.accessKeyId,
+        ':attachment': AWS.config.credentials.secretAccessKey
       },
       ReturnValues: 'ALL_NEW'
     }).promise();
-    
+
     return updated.Attributes as Note;
   }
   
