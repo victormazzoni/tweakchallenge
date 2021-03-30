@@ -1,7 +1,6 @@
-import * as uuid from 'uuid'
-
 import NotesRepository from '../repositories/NotesRepository'
 import { Note } from '../models/Note'
+import { UploadData } from 'src/models/UploadData';
 
 
 export default class NotesService {
@@ -16,12 +15,11 @@ export default class NotesService {
     return this.notesRepository.getAllNotes(userId)
   }
 
-  async getNoteById(id: string, userId: string): Promise<object> {
-    return this.notesRepository.getNoteById(id, userId)
+  async getNoteById(id: string): Promise<object> {
+    return this.notesRepository.getNoteById(id)
   }
 
   async createNote(note: Note): Promise<Note> {
-    note.id = uuid.v4();
     return await this.notesRepository.createNote(note)
   }
 
@@ -29,7 +27,11 @@ export default class NotesService {
     return await this.notesRepository.updateNote(partialNote, userId)
   }
 
-  async deleteNoteById(id: string, userId: string) {
-    return await this.notesRepository.deleteNoteById(id, userId)
+  async deleteNoteById(id: string) {
+    return await this.notesRepository.deleteNoteById(id)
+  }
+
+  async uploadToS3(id: string, userId: string, file: UploadData) {
+    return await this.notesRepository.uploadToS3(id, userId, file)
   }
 }

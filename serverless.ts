@@ -13,17 +13,11 @@ const serverlessConfiguration: AWS = {
     },
     'serverless-offline': {
       httpPort: 3003
-    },   
-    dynamodb: {
-      start: {
-        port: 8000,
-        inMemory: true,
-        migrate: true
-      }
     },
     stages: [
       'dev'
-    ]
+    ],
+    bucket: 'tweakchallenge-upload-dev',
   },
   plugins: [
     'serverless-webpack',
@@ -38,25 +32,30 @@ const serverlessConfiguration: AWS = {
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
+      binaryMediaTypes: ['*/*']
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-      TABLE_NAME: 'tweakchallenge-dev'
+      TABLE_NAME: 'tweakchallenge-dev',
+      BUCKET_NAME: '${self:custom.bucket}',
+      region: '${provider.region}'
     },
-    iamRoleStatements: [ {
-      Effect: 'Allow',
-      Action: [
-        'dynamodb:PutItem',
-        'dynamodb:Scan',
-        'dynamodb:GetItem',
-        'dynamodb:PutItem',
-        'dynamodb:UpdateItem',
-        'dynamodb:DeleteItem',
-        'dynamodb:DescribeTable'
-      ],
-      Resource: 'arn:aws:dynamodb:${self:provider.region}:*:*'
-
-    }],
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: [
+          'dynamodb:*'
+        ],
+        Resource: 'arn:aws:dynamodb:${self:provider.region}:*:*'
+      },
+      {
+        Effect: 'Allow',
+        Action: [
+          's3:*'
+        ],
+        Resource: "arn:aws:s3:::${self:custom.bucket}/*"
+      }
+    ],
     lambdaHashingVersion: '20201221',
   },
   // import the function via paths
@@ -126,9 +125,28 @@ const serverlessConfiguration: AWS = {
         }
       ]
     },
+    upload: {
+      handler: 'src/functions/upload/upload.handler',
+      events: [
+        {
+          http: {
+            method: 'post',
+            path: 'upload',
+            cors: true,
+            authorizer: 'aws_iam'
+          }
+        }
+      ]
+    },
   },
   resources: {
     Resources: {
+      TweakChallengeS3Bucket:{
+        Type: 'AWS::S3::Bucket',
+        Properties: {
+          BucketName: '${self:provider.environment.BUCKET_NAME}'
+        }
+      },
       TweakChallengeDynamoDBTable: {
         Type: 'AWS::DynamoDB::Table',
         Properties: {
