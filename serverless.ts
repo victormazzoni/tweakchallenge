@@ -1,0 +1,97 @@
+import type { AWS } from '@serverless/typescript';
+
+const serverlessConfiguration: AWS = {
+  service: 'tweakchallenge',
+  frameworkVersion: '2',
+  custom: {
+    webpack: {
+      webpackConfig: './webpack.config.js',
+      includeModules: true
+    },
+    'serverless-offline': {
+      httpPort: 3003
+    },   
+    dynamodb: {
+      start: {
+        port: 8000,
+        inMemory: true,
+        migrate: true
+      }
+    },
+    stages: [
+      'dev'
+    ]
+  },
+  plugins: [
+    'serverless-webpack',
+    'serverless-iam-roles-per-function',
+    'serverless-offline'
+  ],
+  provider: {
+    name: 'aws',
+    runtime: 'nodejs12.x',
+    stage: 'dev',
+    region: 'us-east-1',
+    apiGateway: {
+      minimumCompressionSize: 1024,
+      shouldStartNameWithService: true,
+    },
+    environment: {
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      TABLE_NAME: 'tweakchallenge-dev'
+    },
+    iamRoleStatements: [ {
+      Effect: 'Allow',
+      Action: [
+        'dynamodb:PutItem',
+        'dynamodb:Query',
+        'dynamodb:GetItem',
+        'dynamodb:PutItem',
+        'dynamodb:UpdateItem',
+        'dynamodb:DeleteItem',
+        'dynamodb:DescribeTable'
+      ],
+      Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE_NAME}}'
+
+    }],
+    lambdaHashingVersion: '20201221',
+  },
+  // import the function via paths
+  functions: {
+    create: {
+      handler: 'src/functions/create/create.handler',
+      events: [
+        {
+          http: {
+            method: 'post',
+            path: 'notes'
+          }
+        }
+      ]
+    }
+  },
+  resources: {
+    Resources: {
+      TweakChallengeDynamoDBTable: {
+        Type: 'AWS::DynamoDB::Table',
+        Properties: {
+          TableName: '${self:provider.environment.TABLE_NAME}',
+          AttributeDefinitions: [{
+            AttributeName: 'id',
+            AttributeType: 'S'
+          }],            
+          KeySchema: [{
+            AttributeName: 'id',
+            KeyType: 'HASH'
+          }],
+          ProvisionedThroughput:{  
+            ReadCapacityUnits: 1,
+            WriteCapacityUnits: 1
+          }
+        }
+      }
+    }
+  }
+};
+
+module.exports = serverlessConfiguration;
