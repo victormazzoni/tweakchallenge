@@ -1,6 +1,5 @@
 import * as AWS  from 'aws-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
-
 import { Note } from '../models/Note'
 
 export default class NotesRepository {
@@ -18,6 +17,13 @@ export default class NotesRepository {
     return result.Items as Note[];
   }
 
+  async getNoteById(id: string): Promise<object> {
+    return this.docClient.get({
+      TableName: this.table,
+      Key: { 'id': id }
+    }).promise();
+  }
+
   async createNote(note: Note): Promise<Note> {
     await this.docClient.put({
       TableName: this.table,
@@ -31,12 +37,11 @@ export default class NotesRepository {
     const updated = await this.docClient.update({
       TableName: this.table,
       Key: { 'id': partialNote.id },
-      UpdateExpression: 'set #name = :name, done = :done',
-      ExpressionAttributeNames: {
-        '#userId': 'userId'
-      },
+      UpdateExpression: 'set userId = :userId, content = :content, attachment = :attachment',
       ExpressionAttributeValues: {
-        ':userId': partialNote.userId
+        ':userId': partialNote.userId,
+        ':content': partialNote.content,
+        ':attachment': partialNote.attachment
       },
       ReturnValues: 'ALL_NEW'
     }).promise();
@@ -44,10 +49,10 @@ export default class NotesRepository {
     return updated.Attributes as Note;
   }
   
-  async deleteNoteById(noteId: string) {
+  async deleteNoteById(id: string) {
     return this.docClient.delete({
       TableName: this.table,
-      Key: { 'noteId': noteId }
+      Key: { 'id': id }
     }).promise();
   }
 }

@@ -114,6 +114,30 @@
               "LogGroupName": "/aws/lambda/tweakchallenge-dev-create"
             }
           },
+          "GetAllLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/tweakchallenge-dev-getAll"
+            }
+          },
+          "GetLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/tweakchallenge-dev-get"
+            }
+          },
+          "UpdateLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/tweakchallenge-dev-update"
+            }
+          },
+          "DeleteLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/tweakchallenge-dev-delete"
+            }
+          },
           "IamRoleLambdaExecution": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -201,7 +225,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/tweakchallenge/dev/1617121838094-2021-03-30T16:30:38.094Z/tweakchallenge.zip"
+                "S3Key": "serverless/tweakchallenge/dev/1617127063246-2021-03-30T17:57:43.246Z/create.zip"
               },
               "Handler": "src/functions/create/create.handler",
               "Runtime": "nodejs12.x",
@@ -225,14 +249,178 @@
               "CreateLogGroup"
             ]
           },
-          "CreateLambdaVersionfRu6tL5kHeEmIsIGZ1sWqj2REzZNAiSS1PKjhPWIY": {
+          "GetAllLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/tweakchallenge/dev/1617127063246-2021-03-30T17:57:43.246Z/getAll.zip"
+              },
+              "Handler": "src/functions/getAll/getAll.handler",
+              "Runtime": "nodejs12.x",
+              "FunctionName": "tweakchallenge-dev-getAll",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+                  "TABLE_NAME": "tweakchallenge-dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetAllLogGroup"
+            ]
+          },
+          "GetLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/tweakchallenge/dev/1617127063246-2021-03-30T17:57:43.246Z/get.zip"
+              },
+              "Handler": "src/functions/get/get.handler",
+              "Runtime": "nodejs12.x",
+              "FunctionName": "tweakchallenge-dev-get",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+                  "TABLE_NAME": "tweakchallenge-dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetLogGroup"
+            ]
+          },
+          "UpdateLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/tweakchallenge/dev/1617127063246-2021-03-30T17:57:43.246Z/update.zip"
+              },
+              "Handler": "src/functions/update/update.handler",
+              "Runtime": "nodejs12.x",
+              "FunctionName": "tweakchallenge-dev-update",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+                  "TABLE_NAME": "tweakchallenge-dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UpdateLogGroup"
+            ]
+          },
+          "DeleteLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/tweakchallenge/dev/1617127063246-2021-03-30T17:57:43.246Z/delete.zip"
+              },
+              "Handler": "src/functions/delete/delete.handler",
+              "Runtime": "nodejs12.x",
+              "FunctionName": "tweakchallenge-dev-delete",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+                  "TABLE_NAME": "tweakchallenge-dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "DeleteLogGroup"
+            ]
+          },
+          "UpdateLambdaVersionqOioOu7wr7s2tgRT20LsMSKtZRYGLXWTp5j5YbI": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateLambdaFunction"
+              },
+              "CodeSha256": "megIVZAQisHtEH9emhlCVhIN5BXO48vAtZwrI9gIMGk="
+            }
+          },
+          "GetAllLambdaVersionYLhfiS0DzPrdAEL1AOQPU2kJsj2lGA59Fe6DRuc1iI": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetAllLambdaFunction"
+              },
+              "CodeSha256": "WsHSXUy4pN/e9SKSTu8hWTnlDDGV1tTuvlG5GPvhymA="
+            }
+          },
+          "DeleteLambdaVersionmdlX4fKyhc1ovmU1YCmrBcQPzxozd99FaUpVgLcfgI": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "DeleteLambdaFunction"
+              },
+              "CodeSha256": "OJiWxcswAxoMc29Q3YkbM18TwSEGzkjzPTKKpq2TNlg="
+            }
+          },
+          "GetLambdaVersionDCGfAFGofO4vJ2vGzg1iJ4Lvm7rtkRkNYMyRQ8UCc": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetLambdaFunction"
+              },
+              "CodeSha256": "Smydb8C+lFHwoHW4OkW9hZi6LU6w7gXzcq8CQ64hr5M="
+            }
+          },
+          "CreateLambdaVersionfbahUR8TMafdX8XT9BU9RqbS6eQgqgmDaTB1gkIiWQs": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateLambdaFunction"
               },
-              "CodeSha256": "wqg8MO6nvLvfNfH2jfOPdHOLB3Y5QaxGAw/1sb7X1wE="
+              "CodeSha256": "v1boJcPXe5R/ipOdf9WB5e3ZeZXvbw0gW6AQasIqXgA="
             }
           },
           "ApiGatewayRestApi": {
@@ -258,6 +446,18 @@
                 ]
               },
               "PathPart": "notes",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceNotesIdVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceNotes"
+              },
+              "PathPart": "{id}",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -306,7 +506,179 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1617121816170": {
+          "ApiGatewayMethodNotesGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceNotes"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetAllLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodNotesIdVarGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceNotesIdVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodNotesIdVarPut": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "PUT",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceNotesIdVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "UpdateLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodNotesIdVarDelete": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "DELETE",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceNotesIdVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "DeleteLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1617127014042": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -315,7 +687,11 @@
               "StageName": "dev"
             },
             "DependsOn": [
-              "ApiGatewayMethodNotesPost"
+              "ApiGatewayMethodNotesPost",
+              "ApiGatewayMethodNotesGet",
+              "ApiGatewayMethodNotesIdVarGet",
+              "ApiGatewayMethodNotesIdVarPut",
+              "ApiGatewayMethodNotesIdVarDelete"
             ]
           },
           "CreateLambdaPermissionApiGateway": {
@@ -324,6 +700,154 @@
               "FunctionName": {
                 "Fn::GetAtt": [
                   "CreateLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetAllLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetAllLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "UpdateLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UpdateLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "DeleteLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "DeleteLambdaFunction",
                   "Arn"
                 ]
               },
@@ -384,10 +908,34 @@
               "Ref": "ServerlessDeploymentBucket"
             }
           },
+          "UpdateLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UpdateLambdaVersionqOioOu7wr7s2tgRT20LsMSKtZRYGLXWTp5j5YbI"
+            }
+          },
+          "GetAllLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetAllLambdaVersionYLhfiS0DzPrdAEL1AOQPU2kJsj2lGA59Fe6DRuc1iI"
+            }
+          },
+          "DeleteLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "DeleteLambdaVersionmdlX4fKyhc1ovmU1YCmrBcQPzxozd99FaUpVgLcfgI"
+            }
+          },
+          "GetLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetLambdaVersionDCGfAFGofO4vJ2vGzg1iJ4Lvm7rtkRkNYMyRQ8UCc"
+            }
+          },
           "CreateLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateLambdaVersionfRu6tL5kHeEmIsIGZ1sWqj2REzZNAiSS1PKjhPWIY"
+              "Ref": "CreateLambdaVersionfbahUR8TMafdX8XT9BU9RqbS6eQgqgmDaTB1gkIiWQs"
             }
           },
           "ServiceEndpoint": {
@@ -538,13 +1086,97 @@
         ],
         "name": "tweakchallenge-dev-create",
         "package": {
-          "artifact": ".serverless\\tweakchallenge.zip"
+          "artifact": ".serverless\\create.zip"
         },
         "memory": 1024,
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "CreateLambdaVersionfRu6tL5kHeEmIsIGZ1sWqj2REzZNAiSS1PKjhPWIY"
+        "versionLogicalId": "CreateLambdaVersionfbahUR8TMafdX8XT9BU9RqbS6eQgqgmDaTB1gkIiWQs"
+      },
+      "getAll": {
+        "handler": "src/functions/getAll/getAll.handler",
+        "events": [
+          {
+            "http": {
+              "method": "get",
+              "path": "notes",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "tweakchallenge-dev-getAll",
+        "package": {
+          "artifact": ".serverless\\getAll.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "GetAllLambdaVersionYLhfiS0DzPrdAEL1AOQPU2kJsj2lGA59Fe6DRuc1iI"
+      },
+      "get": {
+        "handler": "src/functions/get/get.handler",
+        "events": [
+          {
+            "http": {
+              "method": "get",
+              "path": "notes/{id}",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "tweakchallenge-dev-get",
+        "package": {
+          "artifact": ".serverless\\get.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "GetLambdaVersionDCGfAFGofO4vJ2vGzg1iJ4Lvm7rtkRkNYMyRQ8UCc"
+      },
+      "update": {
+        "handler": "src/functions/update/update.handler",
+        "events": [
+          {
+            "http": {
+              "method": "put",
+              "path": "notes/{id}",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "tweakchallenge-dev-update",
+        "package": {
+          "artifact": ".serverless\\update.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "UpdateLambdaVersionqOioOu7wr7s2tgRT20LsMSKtZRYGLXWTp5j5YbI"
+      },
+      "delete": {
+        "handler": "src/functions/delete/delete.handler",
+        "events": [
+          {
+            "http": {
+              "method": "delete",
+              "path": "notes/{id}",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "tweakchallenge-dev-delete",
+        "package": {
+          "artifact": ".serverless\\delete.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "DeleteLambdaVersionmdlX4fKyhc1ovmU1YCmrBcQPzxozd99FaUpVgLcfgI"
       }
     },
     "resources": {
@@ -581,6 +1213,10 @@
       "service": {
         "$ref": "$[\"service\"][\"serviceObject\"]"
       },
+      "package": {
+        "individually": true,
+        "artifactDirectoryName": "serverless/tweakchallenge/dev/1617127063246-2021-03-30T17:57:43.246Z"
+      },
       "frameworkVersion": "2",
       "custom": {
         "$ref": "$[\"service\"][\"custom\"]"
@@ -601,7 +1237,8 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/tweakchallenge/dev/1617121838094-2021-03-30T16:30:38.094Z",
+    "individually": true,
+    "artifactDirectoryName": "serverless/tweakchallenge/dev/1617127063246-2021-03-30T17:57:43.246Z",
     "artifact": ""
   }
 }

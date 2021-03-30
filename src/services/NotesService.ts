@@ -16,6 +16,10 @@ export default class NotesService {
     return this.notesRepository.getAllNotes()
   }
 
+  async getNoteById(id: string): Promise<object> {
+    return this.notesRepository.getNoteById(id)
+  }
+
   async createNote(note: Note): Promise<Note> {
     note.id = uuid.v4();
     return await this.notesRepository.createNote(note)

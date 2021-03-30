@@ -2,6 +2,9 @@ import type { AWS } from '@serverless/typescript';
 
 const serverlessConfiguration: AWS = {
   service: 'tweakchallenge',
+  package: {
+    individually: true
+  },
   frameworkVersion: '2',
   custom: {
     webpack: {
@@ -68,7 +71,51 @@ const serverlessConfiguration: AWS = {
           }
         }
       ]
-    }
+    },
+    getAll: {
+      handler: 'src/functions/getAll/getAll.handler',
+      events: [
+        {
+          http: {
+            method: 'get',
+            path: 'notes'
+          }
+        }
+      ]
+    },
+    get: {
+      handler: 'src/functions/get/get.handler',
+      events: [
+        {
+          http: {
+            method: 'get',
+            path: 'notes/{id}'
+          }
+        }
+      ]
+    },
+    update: {
+      handler: 'src/functions/update/update.handler',
+      events: [
+        {
+          http: {
+            method: 'put',
+            path: 'notes/{id}'
+          }
+        }
+      ]
+    },
+    delete: {
+      handler: 'src/functions/delete/delete.handler',
+      events: [
+        {
+          http: {
+            method: 'delete',
+            path: 'notes/{id}'
+          }
+        }
+      ]
+    },
   },
   resources: {
     Resources: {
