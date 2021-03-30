@@ -1,11 +1,11 @@
 import 'source-map-support/register'
-import { APIGatewayProxyResult } from 'aws-lambda'
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import NotesService from 'src/services/NotesService'
 
-export const handler = async (): Promise<APIGatewayProxyResult> => {
+export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
   const notesService = new NotesService()
-  const notes = await notesService.getAllNotes();
+  const notes = await notesService.getAllNotes(event.requestContext.identity.cognitoIdentityId);
 
   return {
     statusCode: 200,

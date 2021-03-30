@@ -12,12 +12,12 @@ export default class NotesService {
     this.notesRepository = notesRepository
   }
 
-  async getAllNotes(): Promise<Note[]> {
-    return this.notesRepository.getAllNotes()
+  async getAllNotes(userId: string): Promise<Note[]> {
+    return this.notesRepository.getAllNotes(userId)
   }
 
-  async getNoteById(id: string): Promise<object> {
-    return this.notesRepository.getNoteById(id)
+  async getNoteById(id: string, userId: string): Promise<object> {
+    return this.notesRepository.getNoteById(id, userId)
   }
 
   async createNote(note: Note): Promise<Note> {
@@ -25,11 +25,11 @@ export default class NotesService {
     return await this.notesRepository.createNote(note)
   }
 
-  async updateNote(partialNote: Partial<Note>) {
-    return await this.notesRepository.updateNote(partialNote)
+  async updateNote(partialNote: Partial<Note>, userId: string) {
+    return await this.notesRepository.updateNote(partialNote, userId)
   }
 
-  async deleteNoteById(id: string) {
-    return await this.notesRepository.deleteNoteById(id)
+  async deleteNoteById(id: string, userId: string) {
+    return await this.notesRepository.deleteNoteById(id, userId)
   }
 }

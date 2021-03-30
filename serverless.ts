@@ -47,14 +47,14 @@ const serverlessConfiguration: AWS = {
       Effect: 'Allow',
       Action: [
         'dynamodb:PutItem',
-        'dynamodb:Query',
+        'dynamodb:Scan',
         'dynamodb:GetItem',
         'dynamodb:PutItem',
         'dynamodb:UpdateItem',
         'dynamodb:DeleteItem',
         'dynamodb:DescribeTable'
       ],
-      Resource: 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE_NAME}}'
+      Resource: 'arn:aws:dynamodb:${self:provider.region}:*:*'
 
     }],
     lambdaHashingVersion: '20201221',
@@ -67,7 +67,9 @@ const serverlessConfiguration: AWS = {
         {
           http: {
             method: 'post',
-            path: 'notes'
+            path: 'notes',
+            cors: true,
+            authorizer: 'aws_iam'
           }
         }
       ]
@@ -78,7 +80,9 @@ const serverlessConfiguration: AWS = {
         {
           http: {
             method: 'get',
-            path: 'notes'
+            path: 'notes',
+            cors: true,
+            authorizer: 'aws_iam'
           }
         }
       ]
@@ -89,7 +93,9 @@ const serverlessConfiguration: AWS = {
         {
           http: {
             method: 'get',
-            path: 'notes/{id}'
+            path: 'notes/{id}',
+            cors: true,
+            authorizer: 'aws_iam'
           }
         }
       ]
@@ -100,7 +106,9 @@ const serverlessConfiguration: AWS = {
         {
           http: {
             method: 'put',
-            path: 'notes/{id}'
+            path: 'notes/{id}',
+            cors: true,
+            authorizer: 'aws_iam'
           }
         }
       ]
@@ -111,7 +119,9 @@ const serverlessConfiguration: AWS = {
         {
           http: {
             method: 'delete',
-            path: 'notes/{id}'
+            path: 'notes/{id}',
+            cors: true,
+            authorizer: 'aws_iam'
           }
         }
       ]

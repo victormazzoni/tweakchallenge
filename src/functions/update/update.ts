@@ -9,7 +9,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
   const notesService = new NotesService()
   const noteParams: Partial<Note> = { ...JSON.parse(event.body), id }
 
-  const note = await notesService.updateNote(noteParams);
+  const note = await notesService.updateNote(noteParams, event.requestContext.identity.cognitoIdentityId);
 
   return {
     statusCode: 200,

@@ -4,7 +4,7 @@ import NotesService from 'src/services/NotesService'
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const notesService = new NotesService()
-  const note = await notesService.getNoteById(event.pathParameters.id);
+  const note = await notesService.getNoteById(event.pathParameters.id, event.requestContext.identity.cognitoIdentityId);
 
   return {
     statusCode: 200,
