@@ -1,4 +1,4 @@
-import Busboy from 'busboy';
+import * as Busboy from 'busboy';
 import * as AWS  from 'aws-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { Note } from '../models/Note'
@@ -109,13 +109,16 @@ export default class NotesRepository {
   
   async updateNote(id: string, userId: string, uploadedFile: APIGatewayProxyResult) {
     const uploadedFileData = JSON.parse(uploadedFile.body);
+    let updateExpression = 'set userId = :userId';
+    updateExpression = uploadedFileData.fileName ? `${updateExpression}, attachment = :attachment` : updateExpression;
+    updateExpression = uploadedFileData.originalUrl ? `${updateExpression}, fileUrl = :fileUrl` : updateExpression;
     return this.docClient.update({
       TableName: this.table,
       Key: {
         'id': id
       },
       ConditionExpression: "userId = :userId AND attribute_exists(id)",
-      UpdateExpression: 'set userId = :userId, attachment = :attachment, fileUrl = :fileUrl',
+      UpdateExpression: updateExpression,
       ExpressionAttributeValues: {
         ':userId': userId,
         ':attachment': uploadedFileData.fileName,
@@ -224,7 +227,7 @@ export default class NotesRepository {
               event.headers['content-type'] || event.headers['Content-Type']
           },
           limits: {
-            maxFileSize
+            fileSize: maxFileSize
           }
       });
 

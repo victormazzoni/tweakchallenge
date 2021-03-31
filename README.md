@@ -1,5 +1,5 @@
 # tweakchallenge
-An API to enable system users to securely upload images provided that they are authenticated
+An API to enable system users to securely upload images provided that they are authenticated.
 
 # Serverless - AWS Node.js Typescript
 
@@ -11,7 +11,7 @@ For detailed instructions, please refer to the [documentation](https://www.serve
 
 Depending on your preferred package manager, follow the instructions below to deploy your project.
 
-> **Requirements**: NodeJS `lts/fermium (v.14.15.0)`. If you're using [nvm](https://github.com/nvm-sh/nvm), run `nvm use` to ensure you're using the same Node version in local and in your lambda's runtime.
+> **Requirements**: NodeJS `v12.22.0`. If you're using [nvm](https://github.com/nvm-sh/nvm), run `nvm use` to ensure you're using the same Node version in local and in your lambda's runtime.
 
 ### Using NPM
 
@@ -25,7 +25,13 @@ Depending on your preferred package manager, follow the instructions below to de
 
 ## Test your service
 
-This template contains a single lambda function triggered by an HTTP request made on the provisioned API Gateway REST API `/hello` route with `POST` method. The request body must be provided as `application/json`. The body structure is tested by API Gateway against `src/functions/hello/schema.ts` JSON-Schema definition: it must contain the `name` property.
+This projetct contains some lambda functions triggered by HTTP requests made on the provisioned API Gateway REST API following routes: 
+
+`/notes` - `POST` -> Creates a note for the authenticated user. If you want to attach a image file (JPG, JPEG or PNG) to the note the file must be on body as a form-data item with key 'image'.
+`/notes` - `GET` -> Gets all notes from the authenticated user.
+`/notes/{id}` - `GET` -> Gets a note with the specified id from the authenticated user.
+`/notes/{id}` - `PUT` -> Updates an existing note from the authenticated user with the specified id. If you want to attach or modify an already attached image file (JPG, JPEG or PNG) to the note the file must be on body as a form-data item with key 'image'.
+`/notes/{id}` - `DELETE` -> Deletes an existing note from the authenticated user with the specified id.
 
 - requesting any other path than `/hello` with any other method than `POST` will result in API Gateway returning a `403` HTTP error code
 - sending a `POST` request to `/hello` with a payload **not** containing a string property named `name` will result in API Gateway returning a `400` HTTP error code

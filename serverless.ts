@@ -16,7 +16,6 @@ const serverlessConfiguration: AWS = {
   },
   plugins: [
     'serverless-webpack',
-    'serverless-iam-roles-per-function',
     'serverless-offline'
   ],
   provider: {

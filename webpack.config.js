@@ -14,7 +14,7 @@ module.exports = {
   entry: slsw.lib.entries,
   devtool: slsw.lib.webpack.isLocal ? 'eval-cheap-module-source-map' : 'source-map',
   resolve: {
-    extensions: ['.mjs', '.json', '.ts'],
+    extensions: ['.mjs', '.json', '.ts', '.js'],
     symlinks: false,
     cacheWithContext: false,
     plugins: [
@@ -32,7 +32,7 @@ module.exports = {
     concatenateModules: false,
   },
   target: 'node',
-  externals: [nodeExternals()],
+  externals: [nodeExternals({allowlist: [/^busboy/, /^dicer/, /^streamsearch/]})],
   module: {
     rules: [
       // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
@@ -41,7 +41,6 @@ module.exports = {
         loader: 'ts-loader',
         exclude: [
           [
-            path.resolve(__dirname, 'node_modules'),
             path.resolve(__dirname, '.serverless'),
             path.resolve(__dirname, '.webpack'),
           ],

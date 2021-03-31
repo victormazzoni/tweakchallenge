@@ -1,5 +1,4 @@
 import NotesRepository from '../repositories/NotesRepository'
-import { Note } from '../models/Note'
 import { UploadData } from 'src/models/UploadData';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
