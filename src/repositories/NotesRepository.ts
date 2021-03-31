@@ -112,6 +112,7 @@ export default class NotesRepository {
     let updateExpression = 'set userId = :userId';
     updateExpression = uploadedFileData.fileName ? `${updateExpression}, attachment = :attachment` : updateExpression;
     updateExpression = uploadedFileData.originalUrl ? `${updateExpression}, fileUrl = :fileUrl` : updateExpression;
+    
     return this.docClient.update({
       TableName: this.table,
       Key: {

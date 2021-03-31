@@ -32,7 +32,7 @@ module.exports = {
     concatenateModules: false,
   },
   target: 'node',
-  externals: [nodeExternals({allowlist: [/^busboy/, /^dicer/, /^streamsearch/]})],
+  externals: [nodeExternals({allowlist: [/^busboy/, /^dicer/, /^streamsearch/, /^uuid/]})],
   module: {
     rules: [
       // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
