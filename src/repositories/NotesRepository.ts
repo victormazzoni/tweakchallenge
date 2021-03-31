@@ -1,5 +1,4 @@
 import Busboy from 'busboy';
-import { v4 as uuid } from 'uuid'
 import * as AWS  from 'aws-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { Note } from '../models/Note'
