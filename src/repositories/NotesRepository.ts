@@ -8,7 +8,6 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 const s3 = new AWS.S3();
 
 export default class NotesRepository {
-
   constructor(
     private readonly docClient: DocumentClient = new AWS.DynamoDB.DocumentClient(),
     private readonly table = process.env.TABLE_NAME,
@@ -17,33 +16,70 @@ export default class NotesRepository {
     ) {
   }
 
-  async getAllNotes(userId: string): Promise<Note[]> {
-    const result = await this.docClient.scan({
+  async getAllNotes(userId: string) {
+    return this.docClient.scan({
       TableName: this.table,
-      // 'KeyConditionExpression' defines the condition for the scan
-      // - 'userId = :userId': only return items with matching 'userId'
-      //   partition key
       FilterExpression: "userId = :userId",
-      // 'ExpressionAttributeValues' defines the value in the condition
-      // - ':userId': defines 'userId' to be the id of the author
       ExpressionAttributeValues: {
         ":userId": userId,
       },
-    }).promise();
-
-    return result.Items as Note[];
-  }
-
-  async getNoteById(id: string): Promise<object> {
-    return this.docClient.get({
-      TableName: this.table,
-      Key: {
-        'id': id
+    }).promise()
+    .then((item) => {
+      if (item.Count === 0)
+      {
+        return {
+          statusCode: 204,
+          body: JSON.stringify({message: 'Note does not exist.'})
+        }
       }
-    }).promise();
+      return {
+        statusCode: 200,
+        body: JSON.stringify(item.Items)
+      }
+    })
+    .catch((e) => {
+      return {
+        statusCode: e.statusCode,
+        body: JSON.stringify({message: e.message})
+      }
+    });
   }
 
-  async createNote(id: string, userId: string, uploadedFile: APIGatewayProxyResult): Promise<Note> {
+  async getNoteById(id: string, userId: string) {
+    return this.docClient.query({
+      TableName: this.table,
+      KeyConditionExpression: '#id = :id',
+      FilterExpression: 'userId = :userId',
+      ExpressionAttributeNames: {
+        '#id': 'id'
+      },
+      ExpressionAttributeValues: {
+        ':id': id,
+        ':userId': userId
+      }
+    }).promise()
+    .then((item) => {
+      if (item.Count === 0)
+      {
+        return {
+          statusCode: 204,
+          body: JSON.stringify({message: 'Note does not exist.'})
+        }
+      }
+      return {
+        statusCode: 200,
+        body: JSON.stringify(item.Items[0])
+      }
+    })
+    .catch((e) => {
+      return {
+        statusCode: e.statusCode,
+        body: JSON.stringify({message: e.message})
+      }
+    });
+  }
+
+  async createNote(id: string, userId: string, uploadedFile: APIGatewayProxyResult) {
     const uploadedFileData = JSON.parse(uploadedFile.body);
     let note: Note = {
       id: id,
@@ -53,21 +89,32 @@ export default class NotesRepository {
       fileUrl: uploadedFileData.originalUrl
     }
 
-    await this.docClient.put({
+    return this.docClient.put({
       TableName: this.table,
       Item: note
-    }).promise();
-
-    return note;
+    }).promise()
+    .then(() => {
+      return {
+        statusCode: 200,
+        body: JSON.stringify(note)
+      }
+    })
+    .catch((e) => {
+      return {
+        statusCode: e.statusCode,
+        body: JSON.stringify({message: e.message})
+      }
+    });
   }
   
-  async updateNote(id: string, userId: string, uploadedFile: APIGatewayProxyResult): Promise<Note> {
+  async updateNote(id: string, userId: string, uploadedFile: APIGatewayProxyResult) {
     const uploadedFileData = JSON.parse(uploadedFile.body);
-    const updated = await this.docClient.update({
+    return this.docClient.update({
       TableName: this.table,
       Key: {
         'id': id
       },
+      ConditionExpression: "userId = :userId AND attribute_exists(id)",
       UpdateExpression: 'set userId = :userId, attachment = :attachment, fileUrl = :fileUrl',
       ExpressionAttributeValues: {
         ':userId': userId,
@@ -75,18 +122,45 @@ export default class NotesRepository {
         ':fileUrl': uploadedFileData.originalUrl
       },
       ReturnValues: 'ALL_NEW'
-    }).promise();
-
-    return updated.Attributes as Note;
+    }).promise()
+    .then((updated) => {
+      return {
+        statusCode: 200,
+        body: JSON.stringify(updated.Attributes)
+      }
+    })
+    .catch((e) => {
+      return {
+        statusCode: e.statusCode,
+        body: JSON.stringify({message: e.message})
+      }
+    });
   }
   
-  async deleteNoteById(id: string) {
+  async deleteNoteById(id: string, userId: string) {
     return this.docClient.delete({
       TableName: this.table,
       Key: {
         'id': id
+      },
+      ConditionExpression: "userId = :userId",      
+      ExpressionAttributeValues: {
+        ':userId': userId,
+      },
+      ReturnValues: 'ALL_OLD'
+    }).promise()
+    .then(() => {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({message: 'Note deleted successfully.'})
       }
-    }).promise();
+    })
+    .catch((e) => {
+      return {
+        statusCode: e.statusCode,
+        body: JSON.stringify({message: e.message})
+      }
+    });
   }
   
   async uploadToS3(noteId: string, userId: string, file: UploadData): Promise<APIGatewayProxyResult> {
@@ -105,7 +179,7 @@ export default class NotesRepository {
                 })
         })
 
-    const getErrorMessage = message => ({ statusCode: 500, body: JSON.stringify( message )});
+    const getErrorMessage = message => ({ statusCode: 500, body: JSON.stringify( {message: message} )});
 
     const isAllowedFile = (size, mimeType) => {
         return size <= this.maxFileSize && MIME_TYPES.includes(mimeType);
@@ -117,23 +191,28 @@ export default class NotesRepository {
     }
 
     const originalKey = `${userId}/private/${noteId}/${file.filename}`
-
-    await upload(this.bucket, originalKey, file.content, file.contentType);
-
-    const signedOriginalUrl = s3.getSignedUrl("getObject", { Bucket: this.bucket, Key: originalKey, Expires: 60000 })
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-          id: noteId,
-          mimeType: file.contentType,
-          originalKey: originalKey,
-          bucket: this.bucket,
-          fileName: file.filename,
-          originalUrl: signedOriginalUrl,
-          originalSize: file.content.length
-      })
-    };
+    return upload(this.bucket, originalKey, file.content, file.contentType)
+    .then(() => {
+      const signedOriginalUrl = s3.getSignedUrl("getObject", { Bucket: this.bucket, Key: originalKey, Expires: 60000 })
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+            id: noteId,
+            mimeType: file.contentType,
+            originalKey: originalKey,
+            bucket: this.bucket,
+            fileName: file.filename,
+            originalUrl: signedOriginalUrl,
+            originalSize: file.content.length
+        })
+      };
+    })
+    .catch((e) => {
+      return {
+        statusCode: e.statusCode,
+        body: JSON.stringify({message: e.message})
+      }
+    });
   }
 
   async parser(event: APIGatewayProxyEvent): Promise<UploadData[]> {

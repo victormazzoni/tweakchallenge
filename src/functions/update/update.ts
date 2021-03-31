@@ -12,12 +12,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
   const uploadedFile = await notesService.uploadToS3(id, event.requestContext.identity.cognitoIdentityId, file);
 
-  const note = await notesService.updateNote(id, event.requestContext.identity.cognitoIdentityId, uploadedFile);
+  const result = await notesService.updateNote(id, event.requestContext.identity.cognitoIdentityId, uploadedFile);
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      note: note
-    })
-  };
+  return result as APIGatewayProxyResult;
 }

@@ -12,15 +12,15 @@ export default class NotesService {
     this.notesRepository = notesRepository
   }
 
-  async getAllNotes(userId: string): Promise<Note[]> {
+  async getAllNotes(userId: string) {
     return this.notesRepository.getAllNotes(userId)
   }
 
-  async getNoteById(id: string): Promise<object> {
-    return this.notesRepository.getNoteById(id)
+  async getNoteById(id: string, userId: string) {
+    return this.notesRepository.getNoteById(id, userId)
   }
 
-  async createNote(id: string, userId: string, uploadedFile: APIGatewayProxyResult): Promise<Note> {
+  async createNote(id: string, userId: string, uploadedFile: APIGatewayProxyResult) {
     return await this.notesRepository.createNote(id, userId, uploadedFile)
   }
 
@@ -28,8 +28,8 @@ export default class NotesService {
     return await this.notesRepository.updateNote(id, userId, uploadedFile)
   }
 
-  async deleteNoteById(id: string) {
-    return await this.notesRepository.deleteNoteById(id)
+  async deleteNoteById(id: string, userId: string) {
+    return await this.notesRepository.deleteNoteById(id, userId);
   }
 
   async parser(event: APIGatewayProxyEvent) {

@@ -13,12 +13,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
   const uploadedFile = await notesService.uploadToS3(id, userId, file);
 
-  const note = await notesService.createNote(id, userId, uploadedFile);
+  const result = await notesService.createNote(id, userId, uploadedFile);
 
-  return {
-    statusCode: 201,
-    body: JSON.stringify({
-      note: note
-    })
-  };
+  return result as APIGatewayProxyResult;
 }

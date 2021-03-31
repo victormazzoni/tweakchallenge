@@ -8,6 +8,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const formData: UploadData[] = await notesService.parser(event);
     const file = formData[0];
 
-    return await notesService.uploadToS3(uuid(), event.requestContext.identity.cognitoIdentityId, file);
-        
+    const result = await notesService.uploadToS3(uuid(), event.requestContext.identity.cognitoIdentityId, file);
+
+    return  result as APIGatewayProxyResult;        
 }
