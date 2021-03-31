@@ -5,12 +5,7 @@ const serverlessConfiguration: AWS = {
   package: {
     individually: true
   },
-  frameworkVersion: '2',
   custom: {
-    webpack: {
-      webpackConfig: './webpack.config.js',
-      includeModules: true
-    },
     'serverless-offline': {
       httpPort: 3003
     },
@@ -38,6 +33,7 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       TABLE_NAME: 'tweakchallenge-dev',
       BUCKET_NAME: '${self:custom.bucket}',
+      MAX_SIZE: '4000000', // 4MB
       region: '${provider.region}'
     },
     iamRoleStatements: [
@@ -47,13 +43,6 @@ const serverlessConfiguration: AWS = {
           'dynamodb:*'
         ],
         Resource: 'arn:aws:dynamodb:${self:provider.region}:*:*'
-      },
-      {
-        Effect: 'Allow',
-        Action: [
-          's3:*'
-        ],
-        Resource: "arn:aws:s3:::${self:custom.bucket}/*"
       }
     ],
     lambdaHashingVersion: '20201221',

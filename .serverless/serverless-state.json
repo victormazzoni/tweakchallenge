@@ -11,23 +11,23 @@
       "region": "us-east-1",
       "apiGateway": {
         "minimumCompressionSize": 1024,
-        "shouldStartNameWithService": true
+        "shouldStartNameWithService": true,
+        "binaryMediaTypes": [
+          "*/*"
+        ]
       },
       "environment": {
         "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-        "TABLE_NAME": "tweakchallenge-dev"
+        "TABLE_NAME": "tweakchallenge-dev",
+        "BUCKET_NAME": "tweakchallenge-upload-dev",
+        "MAX_SIZE": "4000000",
+        "region": "${provider.region}"
       },
       "iamRoleStatements": [
         {
           "Effect": "Allow",
           "Action": [
-            "dynamodb:PutItem",
-            "dynamodb:Scan",
-            "dynamodb:GetItem",
-            "dynamodb:PutItem",
-            "dynamodb:UpdateItem",
-            "dynamodb:DeleteItem",
-            "dynamodb:DescribeTable"
+            "dynamodb:*"
           ],
           "Resource": "arn:aws:dynamodb:us-east-1:*:*"
         }
@@ -138,6 +138,12 @@
               "LogGroupName": "/aws/lambda/tweakchallenge-dev-delete"
             }
           },
+          "UploadLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/tweakchallenge-dev-upload"
+            }
+          },
           "IamRoleLambdaExecution": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -225,7 +231,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/tweakchallenge/dev/1617130125588-2021-03-30T18:48:45.588Z/create.zip"
+                "S3Key": "serverless/tweakchallenge/dev/1617151428503-2021-03-31T00:43:48.503Z/create.zip"
               },
               "Handler": "src/functions/create/create.handler",
               "Runtime": "nodejs12.x",
@@ -235,7 +241,10 @@
               "Environment": {
                 "Variables": {
                   "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-                  "TABLE_NAME": "tweakchallenge-dev"
+                  "TABLE_NAME": "tweakchallenge-dev",
+                  "BUCKET_NAME": "tweakchallenge-upload-dev",
+                  "MAX_SIZE": "4000000",
+                  "region": "${provider.region}"
                 }
               },
               "Role": {
@@ -256,7 +265,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/tweakchallenge/dev/1617130125588-2021-03-30T18:48:45.588Z/getAll.zip"
+                "S3Key": "serverless/tweakchallenge/dev/1617151428503-2021-03-31T00:43:48.503Z/getAll.zip"
               },
               "Handler": "src/functions/getAll/getAll.handler",
               "Runtime": "nodejs12.x",
@@ -266,7 +275,10 @@
               "Environment": {
                 "Variables": {
                   "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-                  "TABLE_NAME": "tweakchallenge-dev"
+                  "TABLE_NAME": "tweakchallenge-dev",
+                  "BUCKET_NAME": "tweakchallenge-upload-dev",
+                  "MAX_SIZE": "4000000",
+                  "region": "${provider.region}"
                 }
               },
               "Role": {
@@ -287,7 +299,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/tweakchallenge/dev/1617130125588-2021-03-30T18:48:45.588Z/get.zip"
+                "S3Key": "serverless/tweakchallenge/dev/1617151428503-2021-03-31T00:43:48.503Z/get.zip"
               },
               "Handler": "src/functions/get/get.handler",
               "Runtime": "nodejs12.x",
@@ -297,7 +309,10 @@
               "Environment": {
                 "Variables": {
                   "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-                  "TABLE_NAME": "tweakchallenge-dev"
+                  "TABLE_NAME": "tweakchallenge-dev",
+                  "BUCKET_NAME": "tweakchallenge-upload-dev",
+                  "MAX_SIZE": "4000000",
+                  "region": "${provider.region}"
                 }
               },
               "Role": {
@@ -318,7 +333,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/tweakchallenge/dev/1617130125588-2021-03-30T18:48:45.588Z/update.zip"
+                "S3Key": "serverless/tweakchallenge/dev/1617151428503-2021-03-31T00:43:48.503Z/update.zip"
               },
               "Handler": "src/functions/update/update.handler",
               "Runtime": "nodejs12.x",
@@ -328,7 +343,10 @@
               "Environment": {
                 "Variables": {
                   "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-                  "TABLE_NAME": "tweakchallenge-dev"
+                  "TABLE_NAME": "tweakchallenge-dev",
+                  "BUCKET_NAME": "tweakchallenge-upload-dev",
+                  "MAX_SIZE": "4000000",
+                  "region": "${provider.region}"
                 }
               },
               "Role": {
@@ -349,7 +367,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/tweakchallenge/dev/1617130125588-2021-03-30T18:48:45.588Z/delete.zip"
+                "S3Key": "serverless/tweakchallenge/dev/1617151428503-2021-03-31T00:43:48.503Z/delete.zip"
               },
               "Handler": "src/functions/delete/delete.handler",
               "Runtime": "nodejs12.x",
@@ -359,7 +377,10 @@
               "Environment": {
                 "Variables": {
                   "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
-                  "TABLE_NAME": "tweakchallenge-dev"
+                  "TABLE_NAME": "tweakchallenge-dev",
+                  "BUCKET_NAME": "tweakchallenge-upload-dev",
+                  "MAX_SIZE": "4000000",
+                  "region": "${provider.region}"
                 }
               },
               "Role": {
@@ -373,60 +394,107 @@
               "DeleteLogGroup"
             ]
           },
-          "GetLambdaVersionZK9DWGiindwCIVVAtZ83VtWBVed4U27jQXA6a54vw": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
+          "UploadLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
             "Properties": {
-              "FunctionName": {
-                "Ref": "GetLambdaFunction"
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/tweakchallenge/dev/1617151428503-2021-03-31T00:43:48.503Z/upload.zip"
               },
-              "CodeSha256": "T5VQpgSqVe3S67hpTqA4wZw2lAxQUTKK10M/BAw3TNM="
-            }
-          },
-          "UpdateLambdaVersion2fPwaBUDfEJpm9BTvV0VGTU2nIGIYRDLxGmOSz4SY": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "UpdateLambdaFunction"
+              "Handler": "src/functions/upload/upload.handler",
+              "Runtime": "nodejs12.x",
+              "FunctionName": "tweakchallenge-dev-upload",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+                  "TABLE_NAME": "tweakchallenge-dev",
+                  "BUCKET_NAME": "tweakchallenge-upload-dev",
+                  "MAX_SIZE": "4000000",
+                  "region": "${provider.region}"
+                }
               },
-              "CodeSha256": "Fwa8bFTfetMsUC7XvRb4rr6C9GMDOcsoxWABlJDyRIU="
-            }
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UploadLogGroup"
+            ]
           },
-          "GetAllLambdaVersionTdlkmSgNdLKbCazsIw7UXefbPkJbvGODLYiVybUu7c": {
+          "GetAllLambdaVersionzq6Qa9oTLoIGMVMTzpTzcE23KavRUGNT9oTAS7TtmEo": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetAllLambdaFunction"
               },
-              "CodeSha256": "yHThs2ywskt/XcE3csU+vlqr0RiTNRjRdQ/pj2yD7I0="
+              "CodeSha256": "3Xfn2h5E2ianmAQFufuZO8ErBcc7uv2e4qIqH/SsGtk="
             }
           },
-          "DeleteLambdaVersion2havx2NNXLklLK98eTmwOMWEyeGXsedChuVURWJuxw": {
+          "GetLambdaVersion8caKmmrNemhVJpFoakE9rPwbCzO1x0cpzCqmG2IHo": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetLambdaFunction"
+              },
+              "CodeSha256": "blJzUEM2Pfgmaz7pWDiEw7fP0hjl88kUlusP7nnhczY="
+            }
+          },
+          "UpdateLambdaVersionxiVEfeUsBVFwxBzVNoEahevQbqrBgjm7o4YquqwEQQ": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateLambdaFunction"
+              },
+              "CodeSha256": "OmuvnLKdId5u/JN45OuHSolWTyQApQERrkSVjvLZT3s="
+            }
+          },
+          "DeleteLambdaVersion1SnHrTF0bhf6WgQJU9uIe9Q1VuNF1rMZKggl3MZMm88": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "DeleteLambdaFunction"
               },
-              "CodeSha256": "6NMqIfhrALCMIzDswFpzgVJ4Fqa2hUw6uAFURn7+XAo="
+              "CodeSha256": "RvmdRPHn5zjBoK8hnWhV/bNmmX6Xr8x2zjlTkgb+Lhc="
             }
           },
-          "CreateLambdaVersionkLX9NquMgxJO3w8GAchdugYAwKT5RJ33BkX97gXt1Xg": {
+          "UploadLambdaVersionn2x1ZDk1kvSukf1kdDWaoe5zCl0IX3yLOuweONOI": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UploadLambdaFunction"
+              },
+              "CodeSha256": "9pLiYY0jVcJyD4z7raMrSFhdIW8XFCpIvOZj1C02khI="
+            }
+          },
+          "CreateLambdaVersionLVku4E06Wd9d6aIkRao3GcpxbTdHW5ubg2oMW8xwU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateLambdaFunction"
               },
-              "CodeSha256": "YpNn6+4oFl0aG4ic9BvLNPRwznkCVZoKpdkpBQRKCAo="
+              "CodeSha256": "LH9+u8q01gqgMSBGFdV4OsUA9GgYsIZKTPn+4rlsD4c="
             }
           },
           "ApiGatewayRestApi": {
             "Type": "AWS::ApiGateway::RestApi",
             "Properties": {
               "Name": "tweakchallenge-dev",
+              "BinaryMediaTypes": [
+                "*/*"
+              ],
               "EndpointConfiguration": {
                 "Types": [
                   "EDGE"
@@ -458,6 +526,21 @@
                 "Ref": "ApiGatewayResourceNotes"
               },
               "PathPart": "{id}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceUpload": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "upload",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -547,6 +630,51 @@
               },
               "ResourceId": {
                 "Ref": "ApiGatewayResourceNotesIdVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodUploadOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUpload"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -768,7 +896,50 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1617130078678": {
+          "ApiGatewayMethodUploadPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUpload"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "AWS_IAM",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "UploadLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1617151421220": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -779,11 +950,13 @@
             "DependsOn": [
               "ApiGatewayMethodNotesOptions",
               "ApiGatewayMethodNotesIdVarOptions",
+              "ApiGatewayMethodUploadOptions",
               "ApiGatewayMethodNotesPost",
               "ApiGatewayMethodNotesGet",
               "ApiGatewayMethodNotesIdVarGet",
               "ApiGatewayMethodNotesIdVarPut",
-              "ApiGatewayMethodNotesIdVarDelete"
+              "ApiGatewayMethodNotesIdVarDelete",
+              "ApiGatewayMethodUploadPost"
             ]
           },
           "CreateLambdaPermissionApiGateway": {
@@ -971,6 +1144,49 @@
               }
             }
           },
+          "UploadLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UploadLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "TweakChallengeS3Bucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketName": "tweakchallenge-upload-dev"
+            }
+          },
           "TweakChallengeDynamoDBTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
@@ -1000,34 +1216,40 @@
               "Ref": "ServerlessDeploymentBucket"
             }
           },
+          "GetAllLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetAllLambdaVersionzq6Qa9oTLoIGMVMTzpTzcE23KavRUGNT9oTAS7TtmEo"
+            }
+          },
           "GetLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetLambdaVersionZK9DWGiindwCIVVAtZ83VtWBVed4U27jQXA6a54vw"
+              "Ref": "GetLambdaVersion8caKmmrNemhVJpFoakE9rPwbCzO1x0cpzCqmG2IHo"
             }
           },
           "UpdateLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdateLambdaVersion2fPwaBUDfEJpm9BTvV0VGTU2nIGIYRDLxGmOSz4SY"
-            }
-          },
-          "GetAllLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "GetAllLambdaVersionTdlkmSgNdLKbCazsIw7UXefbPkJbvGODLYiVybUu7c"
+              "Ref": "UpdateLambdaVersionxiVEfeUsBVFwxBzVNoEahevQbqrBgjm7o4YquqwEQQ"
             }
           },
           "DeleteLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DeleteLambdaVersion2havx2NNXLklLK98eTmwOMWEyeGXsedChuVURWJuxw"
+              "Ref": "DeleteLambdaVersion1SnHrTF0bhf6WgQJU9uIe9Q1VuNF1rMZKggl3MZMm88"
+            }
+          },
+          "UploadLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UploadLambdaVersionn2x1ZDk1kvSukf1kdDWaoe5zCl0IX3yLOuweONOI"
             }
           },
           "CreateLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateLambdaVersionkLX9NquMgxJO3w8GAchdugYAwKT5RJ33BkX97gXt1Xg"
+              "Ref": "CreateLambdaVersionLVku4E06Wd9d6aIkRao3GcpxbTdHW5ubg2oMW8xwU"
             }
           },
           "ServiceEndpoint": {
@@ -1140,23 +1362,13 @@
       "vpc": {}
     },
     "custom": {
-      "webpack": {
-        "webpackConfig": "./webpack.config.js",
-        "includeModules": true
-      },
       "serverless-offline": {
         "httpPort": 3003
       },
-      "dynamodb": {
-        "start": {
-          "port": 8000,
-          "inMemory": true,
-          "migrate": true
-        }
-      },
       "stages": [
         "dev"
-      ]
+      ],
+      "bucket": "tweakchallenge-upload-dev"
     },
     "plugins": [
       "serverless-webpack",
@@ -1208,7 +1420,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "CreateLambdaVersionkLX9NquMgxJO3w8GAchdugYAwKT5RJ33BkX97gXt1Xg"
+        "versionLogicalId": "CreateLambdaVersionLVku4E06Wd9d6aIkRao3GcpxbTdHW5ubg2oMW8xwU"
       },
       "getAll": {
         "handler": "src/functions/getAll/getAll.handler",
@@ -1253,7 +1465,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetAllLambdaVersionTdlkmSgNdLKbCazsIw7UXefbPkJbvGODLYiVybUu7c"
+        "versionLogicalId": "GetAllLambdaVersionzq6Qa9oTLoIGMVMTzpTzcE23KavRUGNT9oTAS7TtmEo"
       },
       "get": {
         "handler": "src/functions/get/get.handler",
@@ -1298,7 +1510,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "GetLambdaVersionZK9DWGiindwCIVVAtZ83VtWBVed4U27jQXA6a54vw"
+        "versionLogicalId": "GetLambdaVersion8caKmmrNemhVJpFoakE9rPwbCzO1x0cpzCqmG2IHo"
       },
       "update": {
         "handler": "src/functions/update/update.handler",
@@ -1343,7 +1555,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "UpdateLambdaVersion2fPwaBUDfEJpm9BTvV0VGTU2nIGIYRDLxGmOSz4SY"
+        "versionLogicalId": "UpdateLambdaVersionxiVEfeUsBVFwxBzVNoEahevQbqrBgjm7o4YquqwEQQ"
       },
       "delete": {
         "handler": "src/functions/delete/delete.handler",
@@ -1388,11 +1600,62 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "DeleteLambdaVersion2havx2NNXLklLK98eTmwOMWEyeGXsedChuVURWJuxw"
+        "versionLogicalId": "DeleteLambdaVersion1SnHrTF0bhf6WgQJU9uIe9Q1VuNF1rMZKggl3MZMm88"
+      },
+      "upload": {
+        "handler": "src/functions/upload/upload.handler",
+        "events": [
+          {
+            "http": {
+              "method": "post",
+              "path": "upload",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "authorizer": {
+                "type": "AWS_IAM",
+                "managedExternally": false,
+                "identitySource": "method.request.header.Authorization"
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "tweakchallenge-dev-upload",
+        "package": {
+          "artifact": ".serverless\\upload.zip"
+        },
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs12.x",
+        "vpc": {},
+        "versionLogicalId": "UploadLambdaVersionn2x1ZDk1kvSukf1kdDWaoe5zCl0IX3yLOuweONOI"
       }
     },
     "resources": {
       "Resources": {
+        "TweakChallengeS3Bucket": {
+          "Type": "AWS::S3::Bucket",
+          "Properties": {
+            "BucketName": "tweakchallenge-upload-dev"
+          }
+        },
         "TweakChallengeDynamoDBTable": {
           "Type": "AWS::DynamoDB::Table",
           "Properties": {
@@ -1427,9 +1690,8 @@
       },
       "package": {
         "individually": true,
-        "artifactDirectoryName": "serverless/tweakchallenge/dev/1617130125588-2021-03-30T18:48:45.588Z"
+        "artifactDirectoryName": "serverless/tweakchallenge/dev/1617151428503-2021-03-31T00:43:48.503Z"
       },
-      "frameworkVersion": "2",
       "custom": {
         "$ref": "$[\"service\"][\"custom\"]"
       },
@@ -1450,7 +1712,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/tweakchallenge/dev/1617130125588-2021-03-30T18:48:45.588Z",
+    "artifactDirectoryName": "serverless/tweakchallenge/dev/1617151428503-2021-03-31T00:43:48.503Z",
     "artifact": ""
   }
 }

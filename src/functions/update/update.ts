@@ -1,15 +1,18 @@
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import NotesService from 'src/services/NotesService'
-import { Note } from 'src/models/Note'
+import { UploadData } from 'src/models/UploadData'
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters.id;
 
   const notesService = new NotesService()
-  const noteParams: Partial<Note> = { ...JSON.parse(event.body), id }
+  const formData: UploadData[] = await notesService.parser(event);
+  const file = formData[0];
 
-  const note = await notesService.updateNote(noteParams, event.requestContext.identity.cognitoIdentityId);
+  const uploadedFile = await notesService.uploadToS3(id, event.requestContext.identity.cognitoIdentityId, file);
+
+  const note = await notesService.updateNote(id, event.requestContext.identity.cognitoIdentityId, uploadedFile);
 
   return {
     statusCode: 200,

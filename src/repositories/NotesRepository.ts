@@ -1,8 +1,10 @@
+import Busboy from 'busboy';
 import { v4 as uuid } from 'uuid'
 import * as AWS  from 'aws-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { Note } from '../models/Note'
 import { UploadData } from 'src/models/UploadData';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 const s3 = new AWS.S3();
 
@@ -10,7 +12,10 @@ export default class NotesRepository {
 
   constructor(
     private readonly docClient: DocumentClient = new AWS.DynamoDB.DocumentClient(),
-    private readonly table = process.env.TABLE_NAME) {
+    private readonly table = process.env.TABLE_NAME,
+    private readonly bucket = process.env.BUCKET_NAME,
+    private readonly maxFileSize = parseInt(process.env.MAX_SIZE)
+    ) {
   }
 
   async getAllNotes(userId: string): Promise<Note[]> {
@@ -39,8 +44,16 @@ export default class NotesRepository {
     }).promise();
   }
 
-  async createNote(note: Note): Promise<Note> {
-    note.id = uuid();
+  async createNote(id: string, userId: string, uploadedFile: APIGatewayProxyResult): Promise<Note> {
+    const uploadedFileData = JSON.parse(uploadedFile.body);
+    let note: Note = {
+      id: id,
+      createdAt: new Date().toISOString(),
+      userId: userId,
+      attachment: uploadedFileData.fileName,
+      fileUrl: uploadedFileData.originalUrl
+    }
+
     await this.docClient.put({
       TableName: this.table,
       Item: note
@@ -49,18 +62,18 @@ export default class NotesRepository {
     return note;
   }
   
-  async updateNote(partialNote: Partial<Note>, userId: string): Promise<Note> {
-    
+  async updateNote(id: string, userId: string, uploadedFile: APIGatewayProxyResult): Promise<Note> {
+    const uploadedFileData = JSON.parse(uploadedFile.body);
     const updated = await this.docClient.update({
       TableName: this.table,
       Key: {
-        'id': partialNote.id
+        'id': id
       },
-      UpdateExpression: 'set userId = :userId, content = :content, attachment = :attachment',
+      UpdateExpression: 'set userId = :userId, attachment = :attachment, fileUrl = :fileUrl',
       ExpressionAttributeValues: {
         ':userId': userId,
-        ':content': AWS.config.credentials.accessKeyId,
-        ':attachment': AWS.config.credentials.secretAccessKey
+        ':attachment': uploadedFileData.fileName,
+        ':fileUrl': uploadedFileData.originalUrl
       },
       ReturnValues: 'ALL_NEW'
     }).promise();
@@ -77,9 +90,7 @@ export default class NotesRepository {
     }).promise();
   }
   
-  async uploadToS3(noteId: string, userId: string, file: UploadData) {
-    const bucket = process.env.BUCKET_NAME
-    const MAX_SIZE = 4000000 // 4MB
+  async uploadToS3(noteId: string, userId: string, file: UploadData): Promise<APIGatewayProxyResult> {
     const PNG_MIME_TYPE = "image/png"
     const JPEG_MIME_TYPE = "image/jpeg"
     const JPG_MIME_TYPE = "image/jpg"
@@ -98,35 +109,89 @@ export default class NotesRepository {
     const getErrorMessage = message => ({ statusCode: 500, body: JSON.stringify( message )});
 
     const isAllowedFile = (size, mimeType) => {
-        console.log(size <= MAX_SIZE && MIME_TYPES.includes(mimeType));
-        return size <= MAX_SIZE && MIME_TYPES.includes(mimeType);
+        return size <= this.maxFileSize && MIME_TYPES.includes(mimeType);
     }
 
     if (!isAllowedFile(file.content.length, file.contentType))
-      {
-          return getErrorMessage("File size or type not allowed");
-      }
+    {
+        return getErrorMessage("File size or type not allowed");
+    }
 
-    const uid = uuid()
-    const originalKey = `${uid}_original_${file.filename}`
+    const originalKey = `${userId}/private/${noteId}/${file.filename}`
 
-    const originalFile = await Promise.all([
-        upload(bucket, originalKey, file.content, file.contentType),
-    ])
+    await upload(this.bucket, originalKey, file.content, file.contentType);
 
-    const signedOriginalUrl = s3.getSignedUrl("getObject", { Bucket: bucket, Key: originalKey, Expires: 60000 })
+    const signedOriginalUrl = s3.getSignedUrl("getObject", { Bucket: this.bucket, Key: originalKey, Expires: 60000 })
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-          id: uid,
+          id: noteId,
           mimeType: file.contentType,
           originalKey: originalKey,
-          bucket: bucket,
+          bucket: this.bucket,
           fileName: file.filename,
           originalUrl: signedOriginalUrl,
           originalSize: file.content.length
       })
     };
+  }
+
+  async parser(event: APIGatewayProxyEvent): Promise<UploadData[]> {
+    return new Promise((resolve, reject) => {
+      const maxFileSize = this.maxFileSize;
+      const busboy = new Busboy({
+          headers: {
+              'content-type':
+              event.headers['content-type'] || event.headers['Content-Type']
+          },
+          limits: {
+            maxFileSize
+          }
+      });
+
+      let files: UploadData[] = [];
+  
+      const result = {
+          files: files
+      };
+      busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+          
+          const uploadFile: UploadData = {
+              content: '',
+              filename: '',
+              contentType: '',
+              encoding: '',
+              fieldname: ''
+          }
+          file.on('data', data => {
+              uploadFile.content = data
+          });
+          file.on('end', () => {
+              if (uploadFile.content) {
+                  uploadFile.filename = filename
+                  uploadFile.contentType = mimetype
+                  uploadFile.encoding = encoding
+                  uploadFile.fieldname = fieldname
+                  result.files.push(uploadFile)
+                }
+          })
+      })
+  
+      busboy.on('field', (fieldname, value) => {
+          result[fieldname] = value
+      });
+  
+      busboy.on('error', error => {
+          reject(error)
+      })
+  
+      busboy.on('finish', () => {
+          resolve(result.files);
+      })
+  
+      busboy.write(event.body, event.isBase64Encoded ? 'base64' : 'binary')
+      busboy.end()
+    })
   }
 }

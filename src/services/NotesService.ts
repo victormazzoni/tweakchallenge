@@ -1,6 +1,7 @@
 import NotesRepository from '../repositories/NotesRepository'
 import { Note } from '../models/Note'
 import { UploadData } from 'src/models/UploadData';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 
 export default class NotesService {
@@ -19,16 +20,20 @@ export default class NotesService {
     return this.notesRepository.getNoteById(id)
   }
 
-  async createNote(note: Note): Promise<Note> {
-    return await this.notesRepository.createNote(note)
+  async createNote(id: string, userId: string, uploadedFile: APIGatewayProxyResult): Promise<Note> {
+    return await this.notesRepository.createNote(id, userId, uploadedFile)
   }
 
-  async updateNote(partialNote: Partial<Note>, userId: string) {
-    return await this.notesRepository.updateNote(partialNote, userId)
+  async updateNote(id: string, userId: string, uploadedFile: APIGatewayProxyResult) {
+    return await this.notesRepository.updateNote(id, userId, uploadedFile)
   }
 
   async deleteNoteById(id: string) {
     return await this.notesRepository.deleteNoteById(id)
+  }
+
+  async parser(event: APIGatewayProxyEvent) {
+    return await this.notesRepository.parser(event)
   }
 
   async uploadToS3(id: string, userId: string, file: UploadData) {
