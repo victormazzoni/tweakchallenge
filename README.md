@@ -43,9 +43,9 @@ This projetct contains some lambda functions triggered by HTTP requests made on 
 
 In order to test the functions locally, run the following command:
 
-- `serverless invoke local --function {FUNCTIONNAME}  --path src/functions/{FUNCTIONNAME}/mock.json`
+- `serverless invoke local --function {FUNCTIONNAME}  --path src/functions/mock.json`
 
-*Replacing {FUNCTIONNAME} with the function you're trying to test and updating the respective mock.json data with the parameters you want to test.
+*Replacing {FUNCTIONNAME} with the function you're trying to test and updating the mock.json data with the parameters you want to test.
 
 ### Remotely
 

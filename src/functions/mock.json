@@ -1,0 +1,13 @@
+{
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "pathParameters": {
+    "id": "id"
+  },
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "userId"
+    }
+  }
+}

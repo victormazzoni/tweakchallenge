@@ -16,6 +16,7 @@ export default class NotesRepository {
     ) {
   }
 
+  //Gets all notes from an user
   async getAllNotes(userId: string) {
     return this.docClient.scan({
       TableName: this.table,
