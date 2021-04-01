@@ -38,4 +38,8 @@ export default class NotesService {
   async uploadToS3(id: string, userId: string, file: UploadData) {
     return await this.notesRepository.uploadToS3(id, userId, file)
   }
+
+  async deleteFromS3(id: string, userId: string, fileName: string) {
+    return await this.notesRepository.deleteFromS3(id, userId, fileName)
+  }
 }

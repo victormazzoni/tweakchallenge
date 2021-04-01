@@ -112,7 +112,7 @@ export default class NotesRepository {
     let updateExpression = 'set userId = :userId';
     updateExpression = uploadedFileData.fileName ? `${updateExpression}, attachment = :attachment` : updateExpression;
     updateExpression = uploadedFileData.originalUrl ? `${updateExpression}, fileUrl = :fileUrl` : updateExpression;
-    
+
     return this.docClient.update({
       TableName: this.table,
       Key: {
@@ -174,15 +174,14 @@ export default class NotesRepository {
     const MIME_TYPES = [PNG_MIME_TYPE, JPEG_MIME_TYPE, JPG_MIME_TYPE];
 
     const upload = (bucket, key, buffer, mimeType) =>
-        new Promise((resolve, reject) => {
-            s3.upload(
-                { Bucket: bucket, Key: key, Body: buffer, ContentType: mimeType },
-                function(err, data) {
-                    if (err) reject(err);
-                    resolve(data)
-                })
-        })
-
+      new Promise((resolve, reject) => {
+          s3.upload(
+              { Bucket: bucket, Key: key, Body: buffer, ContentType: mimeType },
+              function(err, data) {
+                  if (err) reject(err);
+                  resolve(data)
+              })
+      })
     const getErrorMessage = message => ({ statusCode: 500, body: JSON.stringify( {message: message} )});
 
     const isAllowedFile = (size, mimeType) => {
@@ -275,5 +274,32 @@ export default class NotesRepository {
       busboy.write(event.body, event.isBase64Encoded ? 'base64' : 'binary')
       busboy.end()
     })
+  }
+  
+  async deleteFromS3(noteId: string, userId: string, fileName: string): Promise<APIGatewayProxyResult> {
+    const deleteFile = (bucket, key) =>
+      new Promise((resolve, reject) => {
+          s3.deleteObject(
+              { Bucket: bucket, Key: key},
+              function(err, data) {
+                  if (err) reject(err);
+                  resolve(data)
+              })
+      })
+
+    const originalKey = `${userId}/private/${noteId}/${fileName}`
+    return deleteFile(this.bucket, originalKey)
+    .then(() => {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({message: 'Attached file deleted successfully.'})
+      };
+    })
+    .catch((e) => {
+      return {
+        statusCode: e.statusCode,
+        body: JSON.stringify({message: e.message})
+      }
+    });
   }
 }

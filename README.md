@@ -27,11 +27,11 @@ Depending on your preferred package manager, follow the instructions below to de
 
 This projetct contains some lambda functions triggered by HTTP requests made on the provisioned API Gateway REST API following routes: 
 
-`/notes` - `POST` -> Creates a note for the authenticated user. If you want to attach a image file (JPG, JPEG or PNG) to the note the file must be on body as a form-data item with key 'image'.
-`/notes` - `GET` -> Gets all notes from the authenticated user.
-`/notes/{id}` - `GET` -> Gets a note with the specified id from the authenticated user.
-`/notes/{id}` - `PUT` -> Updates an existing note from the authenticated user with the specified id. If you want to attach or modify an already attached image file (JPG, JPEG or PNG) to the note the file must be on body as a form-data item with key 'image'.
-`/notes/{id}` - `DELETE` -> Deletes an existing note from the authenticated user with the specified id.
+- `/notes` - `POST` -> Creates a note for the authenticated user. If you want to attach a image file (JPG, JPEG or PNG) to the note the file must be on body as a form-data item with key 'image'.
+- `/notes` - `GET` -> Gets all notes from the authenticated user.
+- `/notes/{id}` - `GET` -> Gets a note with the specified id from the authenticated user.
+- `/notes/{id}` - `PUT` -> Updates an existing note from the authenticated user with the specified id. If you want to attach or modify an already attached image file (JPG, JPEG or PNG) to the note the file must be on body as a form-data item with key 'image'.
+- `/notes/{id}` - `DELETE` -> Deletes an existing note from the authenticated user with the specified id.
 
 - requesting any other path than `/hello` with any other method than `POST` will result in API Gateway returning a `403` HTTP error code
 - sending a `POST` request to `/hello` with a payload **not** containing a string property named `name` will result in API Gateway returning a `400` HTTP error code
