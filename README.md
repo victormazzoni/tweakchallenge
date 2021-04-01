@@ -33,18 +33,18 @@ This projetct contains some lambda functions triggered by HTTP requests made on 
 - `/notes/{id}` - `PUT` -> Updates an existing note from the authenticated user with the specified id. If you want to attach or modify an already attached image file (JPG, JPEG or PNG) to the note the file must be on body as a form-data item with key 'image'.
 - `/notes/{id}` - `DELETE` -> Deletes an existing note from the authenticated user with the specified id.
 
-> requesting any other path than the listed above with any other method than the listed above will result in API Gateway returning a `404` with a list of valid routes.
-> trying to create or update a note with a file that is not an image will create the note without any attachment.
-> trying to update a note without or with a body and without a file won't update anything on note.
+> - requesting any other path than the listed above with any other method than the listed above will result in API Gateway returning a `404` with a list of valid routes.
+> - trying to create or update a note with a file that is not an image will create the note without any attachment.
+> - trying to update a note without or with a body and without a file won't update anything on note.
 
 ### Locally
 
 > **Requirements**: Serverless Offline. If you're using npm, run `npm --save-dev install serverless-offline` to ensure you have the hability to run the following command:
 
 In order to test the functions locally, run the following command:
-
-- `serverless invoke local --function {FUNCTIONNAME}  --path src/functions/mock.json`
-
+```
+serverless invoke local --function {FUNCTIONNAME}  --path src/functions/mock.json
+```
 *Replacing {FUNCTIONNAME} with the function you're trying to test and updating the mock.json data with the parameters you want to test.
 
 ### Remotely
