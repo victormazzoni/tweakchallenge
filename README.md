@@ -55,6 +55,14 @@ serverless invoke local --function {FUNCTIONNAME}  --path src/functions/mock.jso
 npx aws-api-gateway-cli-test --username {USERNAME}  --password {PASSWORD}! --user-pool-id {USERPOOL} --app-client-id {APPCLIENTID} --cognito-region {COGNITOREGION} --identity-pool-id {IDENTITYPOOL} --invoke-url {INVOKEURL} --api-gateway-region {APIREGION} --path-template {APIPATH} --method {APIMETHOD} --body '{BODYOBJECT}'
 ```
 
+### Integration tests
+
+> **Requirements**: jest and supertest. If you're using npm, run `npm install --save-dev jest supertest` and include `"integration": "jest __tests__/integration/*"` on package.json *scripts* section to ensure you have the hability to run the following command:
+
+```
+npm run integration
+```
+
 ## Template features
 
 ### 3rd party libraries
