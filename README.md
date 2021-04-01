@@ -33,70 +33,34 @@ This projetct contains some lambda functions triggered by HTTP requests made on 
 - `/notes/{id}` - `PUT` -> Updates an existing note from the authenticated user with the specified id. If you want to attach or modify an already attached image file (JPG, JPEG or PNG) to the note the file must be on body as a form-data item with key 'image'.
 - `/notes/{id}` - `DELETE` -> Deletes an existing note from the authenticated user with the specified id.
 
-- requesting any other path than `/hello` with any other method than `POST` will result in API Gateway returning a `403` HTTP error code
-- sending a `POST` request to `/hello` with a payload **not** containing a string property named `name` will result in API Gateway returning a `400` HTTP error code
-- sending a `POST` request to `/hello` with a payload containing a string property named `name` will result in API Gateway returning a `200` HTTP status code with a message saluting the provided name and the detailed event processed by the lambda
-
-> :warning: As is, this template, once deployed, opens a **public** endpoint within your AWS account resources. Anybody with the URL can actively execute the API Gateway endpoint and the corresponding lambda. You should protect this endpoint with the authentication method of your choice.
+> requesting any other path than the listed above with any other method than the listed above will result in API Gateway returning a `404` with a list of valid routes.
+> trying to create or update a note with a file that is not an image will create the note without any attachment.
+> trying to update a note without or with a body and without a file won't update anything on note.
 
 ### Locally
 
-In order to test the hello function locally, run the following command:
+> **Requirements**: Serverless Offline. If you're using npm, run `npm --save-dev install serverless-offline` to ensure you have the hability to run the following command:
 
-- `npx sls invoke local -f hello --path src/functions/hello/mock.json` if you're using NPM
-- `yarn sls invoke local -f hello --path src/functions/hello/mock.json` if you're using Yarn
+In order to test the functions locally, run the following command:
 
-Check the [sls invoke local command documentation](https://www.serverless.com/framework/docs/providers/aws/cli-reference/invoke-local/) for more information.
+- `serverless invoke local --function {FUNCTIONNAME}  --path src/functions/{FUNCTIONNAME}/mock.json`
+
+*Replacing {FUNCTIONNAME} with the function you're trying to test and updating the respective mock.json data with the parameters you want to test.
 
 ### Remotely
 
-Copy and replace your `url` - found in Serverless `deploy` command output - and `name` parameter in the following `curl` command in your terminal or in Postman to test your newly deployed application.
+> **Requirements**: aws-api-gateway-cli-test. If you're using npm, run `npm install --save-dev aws-api-gateway-cli` to ensure you have the hability to run the following command:
 
 ```
-curl --location --request POST 'https://myApiEndpoint/dev/hello' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "name": "Frederic"
-}'
+npx aws-api-gateway-cli-test --username {USERNAME}  --password {PASSWORD}! --user-pool-id {USERPOOL} --app-client-id {APPCLIENTID} --cognito-region {COGNITOREGION} --identity-pool-id {IDENTITYPOOL} --invoke-url {INVOKEURL} --api-gateway-region {APIREGION} --path-template {APIPATH} --method {APIMETHOD} --body '{BODYOBJECT}'
 ```
 
 ## Template features
 
-### Project structure
-
-The project code base is mainly located within the `src` folder. This folder is divided in:
-
-- `functions` - containing code base and configuration for your lambda functions
-- `libs` - containing shared code base between your lambdas
-
-```
-.
-├── src
-│   ├── functions               # Lambda configuration and source code folder
-│   │   ├── hello
-│   │   │   ├── handler.ts      # `Hello` lambda source code
-│   │   │   ├── index.ts        # `Hello` lambda Serverless configuration
-│   │   │   ├── mock.json       # `Hello` lambda input parameter, if any, for local invocation
-│   │   │   └── schema.ts       # `Hello` lambda input event JSON-Schema
-│   │   │
-│   │   └── index.ts            # Import/export of all lambda configurations
-│   │
-│   └── libs                    # Lambda shared code
-│       └── apiGateway.ts       # API Gateway specific helpers
-│       └── handlerResolver.ts  # Sharable library for resolving lambda handlers
-│       └── lambda.ts           # Lambda middleware
-│
-├── package.json
-├── serverless.ts               # Serverless service file
-├── tsconfig.json               # Typescript compiler configuration
-├── tsconfig.paths.json         # Typescript paths
-└── webpack.config.js           # Webpack configuration
-```
-
 ### 3rd party libraries
 
 - [json-schema-to-ts](https://github.com/ThomasAribart/json-schema-to-ts) - uses JSON-Schema definitions used by API Gateway for HTTP request validation to statically generate TypeScript types in your lambda's handler code base
-- [middy](https://github.com/middyjs/middy) - middleware engine for Node.Js lambda. This template uses [http-json-body-parser](https://github.com/middyjs/middy/tree/master/packages/http-json-body-parser) to convert API Gateway `event.body` property, originally passed as a stringified JSON, to its corresponding parsed object
+- [busboy](https://www.npmjs.com/package/busboy) - used to parse API Gateway `event.body` property, originally passed as a stringified JSON, to its corresponding parsed object.
 - [@serverless/typescript](https://github.com/serverless/typescript) - provides up-to-date TypeScript definitions for your `serverless.ts` service file
 
 ### Advanced usage
