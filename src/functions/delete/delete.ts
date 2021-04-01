@@ -9,9 +9,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
   const notesService = new NotesService();
 
   const getResult = await notesService.getNoteById(id, userId);
-  console.log(getResult);
   const note = JSON.parse(getResult.body) as Note;
-  console.log(note);
   if (note.attachment) {
     await notesService.deleteFromS3(id, userId, note.attachment);
   }
